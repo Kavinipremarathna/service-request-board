@@ -36,6 +36,32 @@
   .dark .text-slate-600 {
     color: #94a3b8; /* muted 500 as readable mid-tone */
   }
+
+  /* Map common text and border classes to readable dark variants */
+  .dark .text-slate-900 {
+    color: #f1f5f9;
+  }
+  .dark .text-slate-700 {
+    color: #cbd5e1;
+  }
+  .dark .text-slate-500 {
+    color: #94a3b8;
+  }
+  .dark .text-muted-500 {
+    color: #94a3b8;
+  }
+
+  .dark .border-slate-200 {
+    border-color: #24303f;
+  }
+  .dark .border-slate-100 {
+    border-color: #172029;
+  }
+
+  /* Ensure small muted backgrounds show in dark */
+  .dark .bg-muted-50 {
+    background-color: #071025;
+  }
 }
 
 @layer utilities {
