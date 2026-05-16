@@ -65,6 +65,36 @@
 }
 
 @layer utilities {
+  /* Strong overrides for dark mode placed in utilities layer so they win over generated utilities */
+  .dark body {
+    background-color: #0f172a !important;
+    color: #e6eef9 !important;
+  }
+  .dark .bg-white {
+    background-color: #0f172a !important;
+  }
+  .dark .bg-muted-50 {
+    background-color: #071025 !important;
+  }
+  .dark .text-slate-900 {
+    color: #f1f5f9 !important;
+  }
+  .dark .text-slate-700 {
+    color: #cbd5e1 !important;
+  }
+  .dark .text-slate-500 {
+    color: #94a3b8 !important;
+  }
+  .dark .text-muted-500 {
+    color: #94a3b8 !important;
+  }
+  .dark .border-slate-200 {
+    border-color: #24303f !important;
+  }
+  .dark .border-slate-100 {
+    border-color: #172029 !important;
+  }
+
   .line-clamp-2 {
     overflow: hidden;
     display: -webkit-box;
