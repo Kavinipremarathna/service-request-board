@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   createContext,
@@ -7,14 +7,14 @@ import {
   useEffect,
   useCallback,
   type ReactNode,
-} from 'react';
-import axios from 'axios';
+} from "react";
+import axios from "axios";
 
 export interface AuthUser {
   _id: string;
   name: string;
   email: string;
-  role: 'homeowner' | 'worker';
+  role: "homeowner" | "worker";
 }
 
 interface AuthContextValue {
@@ -22,7 +22,13 @@ interface AuthContextValue {
   token: string | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string, role: 'homeowner' | 'worker') => Promise<void>;
+  register: (
+    name: string,
+    email: string,
+    password: string,
+    role: "homeowner" | "worker",
+  ) => Promise<void>;
+  updateProfile?: (user: AuthUser) => void;
   logout: () => void;
   isHomeowner: boolean;
   isWorker: boolean;
@@ -30,9 +36,9 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-const TOKEN_KEY = 'srb_token';
-const USER_KEY = 'srb_user';
+const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+const TOKEN_KEY = "srb_token";
+const USER_KEY = "srb_user";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
@@ -62,17 +68,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(u);
   };
 
+  const updateProfileLocal = (u: AuthUser) => {
+    localStorage.setItem(USER_KEY, JSON.stringify(u));
+    setUser(u);
+  };
+
   const login = useCallback(async (email: string, password: string) => {
     const { data } = await axios.post(`${API}/auth/login`, { email, password });
     persist(data.token, data.user);
   }, []);
 
   const register = useCallback(
-    async (name: string, email: string, password: string, role: 'homeowner' | 'worker') => {
-      const { data } = await axios.post(`${API}/auth/register`, { name, email, password, role });
+    async (
+      name: string,
+      email: string,
+      password: string,
+      role: "homeowner" | "worker",
+    ) => {
+      const { data } = await axios.post(`${API}/auth/register`, {
+        name,
+        email,
+        password,
+        role,
+      });
       persist(data.token, data.user);
     },
-    []
+    [],
   );
 
   const logout = useCallback(() => {
@@ -90,9 +111,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         loading,
         login,
         register,
+        updateProfile: updateProfileLocal,
         logout,
-        isHomeowner: user?.role === 'homeowner',
-        isWorker: user?.role === 'worker',
+        isHomeowner: user?.role === "homeowner",
+        isWorker: user?.role === "worker",
       }}
     >
       {children}
@@ -102,6 +124,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export function useAuth() {
   const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error('useAuth must be used inside AuthProvider');
+  if (!ctx) throw new Error("useAuth must be used inside AuthProvider");
   return ctx;
 }
