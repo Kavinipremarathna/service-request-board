@@ -34,20 +34,20 @@ export default function SettingsPage() {
 
   const handlePassword = async (e: React.FormEvent) => {
     e.preventDefault();
-        // Log full error for debugging (network / CORS / server errors)
-        // Axios may provide `response` with more details
-        // eslint-disable-next-line no-console
     setLoading(true);
-        const msg = (err as any)?.message || (err as any)?.response?.data?.message || 'Failed to update';
-        toast.error(msg);
+    try {
       await userApi.changePassword({ currentPassword, newPassword });
       toast.success("Password updated");
       setCurrentPassword("");
       setNewPassword("");
     } catch (err) {
-      toast.error(
-        err instanceof Error ? err.message : "Failed to update password",
-      );
+      // eslint-disable-next-line no-console
+      console.error("Password update error", err);
+      const msg =
+        (err as any)?.message ||
+        (err as any)?.response?.data?.message ||
+        "Failed to update password";
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
