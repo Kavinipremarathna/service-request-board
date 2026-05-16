@@ -42,6 +42,7 @@ const labelClass = "block text-sm font-medium text-slate-700 mb-1.5";
 // ── Login form ────────────────────────────────────────────────────────────────
 function LoginForm({ onSuccess }: { onSuccess: () => void }) {
   const { login } = useAuth();
+  const [loginDebug, setLoginDebug] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
@@ -55,10 +56,13 @@ function LoginForm({ onSuccess }: { onSuccess: () => void }) {
       // debug
       // eslint-disable-next-line no-console
       console.debug("Logging in", { email });
+      setLoginDebug("Submitting...");
       await login(email, password);
+      setLoginDebug("Success");
       toast.success("Welcome back!");
       onSuccess();
     } catch (err) {
+      setLoginDebug((err as any)?.message || "Login failed");
       // eslint-disable-next-line no-console
       console.error("Login error", err);
       toast.error(err instanceof Error ? err.message : "Login failed");
@@ -100,6 +104,11 @@ function LoginForm({ onSuccess }: { onSuccess: () => void }) {
           "Sign In"
         )}
       </button>
+      {loginDebug && (
+        <div className="mt-2 text-xs text-center text-slate-500">
+          Debug: {loginDebug}
+        </div>
+      )}
     </form>
   );
 }
