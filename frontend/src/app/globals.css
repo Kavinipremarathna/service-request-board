@@ -1,0 +1,29 @@
+@import url('https://fonts.bunny.net/css?family=dm-sans:400,500,600,700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    font-family: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  }
+
+  body {
+    min-height: 100vh;
+  }
+}
+
+@layer utilities {
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+}
