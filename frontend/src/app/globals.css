@@ -73,6 +73,35 @@
   .dark .bg-white {
     background-color: #0f172a !important;
   }
+  /* Ensure text inside previously-white cards is light in dark mode */
+  .dark .bg-white,
+  .dark .bg-white * {
+    color: #e6eef9 !important;
+  }
+
+  /* Form elements inside dark mode */
+  .dark input,
+  .dark textarea,
+  .dark select,
+  .dark button {
+    background-color: transparent !important;
+    color: #e6eef9 !important;
+    border-color: #24303f !important;
+  }
+
+  /* Smooth transitions for theme changes */
+  html,
+  body,
+  .bg-white,
+  input,
+  textarea,
+  select,
+  button {
+    transition:
+      background-color 220ms ease,
+      color 220ms ease,
+      border-color 220ms ease;
+  }
   .dark .bg-muted-50 {
     background-color: #071025 !important;
   }
