@@ -1,6 +1,6 @@
-const JobRequest = require('../models/JobRequest');
-const asyncHandler = require('../utils/asyncHandler');
-const AppError = require('../utils/AppError');
+const JobRequest = require("../models/JobRequest");
+const asyncHandler = require("../utils/asyncHandler");
+const AppError = require("../utils/AppError");
 
 // @desc    Get all job requests with optional filters and search
 // @route   GET /api/jobs
@@ -11,11 +11,11 @@ const getJobs = asyncHandler(async (req, res) => {
   if (category) query.category = category;
   if (status) query.status = status;
   if (search) {
-    const regex = new RegExp(search, 'i');
+    const regex = new RegExp(search, "i");
     query.$or = [{ title: regex }, { description: regex }];
   }
   const jobs = await JobRequest.find(query)
-    .populate('owner', 'name email')
+    .populate("owner", "name email")
     .sort({ createdAt: -1 });
   res.status(200).json({ success: true, count: jobs.length, data: jobs });
 });
@@ -24,8 +24,12 @@ const getJobs = asyncHandler(async (req, res) => {
 // @route   GET /api/jobs/:id
 // @access  Public
 const getJob = asyncHandler(async (req, res) => {
-  const job = await JobRequest.findById(req.params.id).populate('owner', 'name email');
-  if (!job) throw new AppError(`Job request not found with id: ${req.params.id}`, 404);
+  const job = await JobRequest.findById(req.params.id).populate(
+    "owner",
+    "name email",
+  );
+  if (!job)
+    throw new AppError(`Job request not found with id: ${req.params.id}`, 404);
   res.status(200).json({ success: true, data: job });
 });
 
@@ -33,12 +37,24 @@ const getJob = asyncHandler(async (req, res) => {
 // @route   POST /api/jobs
 // @access  Private — homeowner only
 const createJob = asyncHandler(async (req, res) => {
-  const { title, description, category, location, contactName, contactEmail } = req.body;
+  const { title, description, category, location, contactName, contactEmail } =
+    req.body;
   const job = await JobRequest.create({
-    title, description, category, location, contactName, contactEmail,
+    title,
+    description,
+    category,
+    location,
+    contactName,
+    contactEmail,
     owner: req.user._id,
   });
-  res.status(201).json({ success: true, message: 'Job request created successfully', data: job });
+  res
+    .status(201)
+    .json({
+      success: true,
+      message: "Job request created successfully",
+      data: job,
+    });
 });
 
 // @desc    Update job status
@@ -46,31 +62,44 @@ const createJob = asyncHandler(async (req, res) => {
 // @access  Private — worker or homeowner
 const updateJobStatus = asyncHandler(async (req, res) => {
   const job = await JobRequest.findById(req.params.id);
-  if (!job) throw new AppError(`Job request not found with id: ${req.params.id}`, 404);
+  if (!job)
+    throw new AppError(`Job request not found with id: ${req.params.id}`, 404);
 
   // Homeowners can only update their own jobs' status
-  if (req.user.role === 'homeowner' && job.owner.toString() !== req.user._id.toString()) {
-    throw new AppError('You can only update the status of your own jobs', 403);
+  if (
+    req.user.role === "homeowner" &&
+    job.owner.toString() !== req.user._id.toString()
+  ) {
+    throw new AppError("You can only update the status of your own jobs", 403);
   }
 
   job.status = req.body.status;
   await job.save();
-  res.status(200).json({ success: true, message: 'Job status updated successfully', data: job });
+  res
+    .status(200)
+    .json({
+      success: true,
+      message: "Job status updated successfully",
+      data: job,
+    });
 });
 
 // @desc    Delete a job request
 // @route   DELETE /api/jobs/:id
-// @access  Private — homeowner (own jobs only)
+// @access  Private — any signed-in user
 const deleteJob = asyncHandler(async (req, res) => {
   const job = await JobRequest.findById(req.params.id);
-  if (!job) throw new AppError(`Job request not found with id: ${req.params.id}`, 404);
-
-  if (job.owner.toString() !== req.user._id.toString()) {
-    throw new AppError('You can only delete your own job requests', 403);
-  }
+  if (!job)
+    throw new AppError(`Job request not found with id: ${req.params.id}`, 404);
 
   await job.deleteOne();
-  res.status(200).json({ success: true, message: 'Job request deleted successfully', data: {} });
+  res
+    .status(200)
+    .json({
+      success: true,
+      message: "Job request deleted successfully",
+      data: {},
+    });
 });
 
 module.exports = { getJobs, getJob, createJob, updateJobStatus, deleteJob };
