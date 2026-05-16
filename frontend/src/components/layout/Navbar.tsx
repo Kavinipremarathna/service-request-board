@@ -91,11 +91,6 @@ export function Navbar() {
 
               {/* User menu */}
               <div className="flex items-center gap-3">
-                <div className="hidden sm:flex flex-col text-right">
-                  <span className="text-sm font-medium text-slate-900">
-                    {user.name}
-                  </span>
-                </div>
                 <UserMenu />
               </div>
             </>

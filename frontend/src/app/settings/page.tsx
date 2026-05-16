@@ -34,8 +34,12 @@ export default function SettingsPage() {
 
   const handlePassword = async (e: React.FormEvent) => {
     e.preventDefault();
+        // Log full error for debugging (network / CORS / server errors)
+        // Axios may provide `response` with more details
+        // eslint-disable-next-line no-console
     setLoading(true);
-    try {
+        const msg = (err as any)?.message || (err as any)?.response?.data?.message || 'Failed to update';
+        toast.error(msg);
       await userApi.changePassword({ currentPassword, newPassword });
       toast.success("Password updated");
       setCurrentPassword("");

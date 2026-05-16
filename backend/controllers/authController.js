@@ -87,4 +87,4 @@ const changePassword = asyncHandler(async (req, res) => {
   res.status(200).json({ success: true, message: "Password updated" });
 });
 
-module.exports = { register, login, getMe };
+module.exports = { register, login, getMe, updateProfile, changePassword };
