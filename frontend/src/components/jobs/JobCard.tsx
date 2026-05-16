@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { MapPin, Calendar, ArrowRight } from 'lucide-react';
-import { StatusBadge } from '@/components/ui/StatusBadge';
-import { CategoryBadge } from '@/components/ui/CategoryBadge';
-import type { JobRequest } from '@/types';
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { MapPin, Calendar, ArrowRight } from "lucide-react";
+import { StatusBadge } from "@/components/ui/StatusBadge";
+import { CategoryBadge } from "@/components/ui/CategoryBadge";
+import type { JobRequest } from "@/types";
 
 interface JobCardProps {
   job: JobRequest;
@@ -13,10 +13,10 @@ interface JobCardProps {
 }
 
 export function JobCard({ job, index = 0 }: JobCardProps) {
-  const date = new Date(job.createdAt).toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
+  const date = new Date(job.createdAt).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
   });
 
   return (
@@ -26,7 +26,8 @@ export function JobCard({ job, index = 0 }: JobCardProps) {
       transition={{ delay: index * 0.05, duration: 0.35 }}
     >
       <Link href={`/jobs/${job._id}`} className="group block">
-        <div className="relative overflow-hidden rounded-2xl border border-slate-100 bg-white p-6 shadow-sm transition-all duration-200 hover:border-slate-200 hover:shadow-md">
+        <div className="relative overflow-hidden rounded-xl bg-white p-6 shadow-card transition-transform duration-200 hover:shadow-lg hover:-translate-y-1">
+          <div className="absolute left-0 top-0 h-full w-1 bg-brand-500 opacity-90" />
           {/* Top row */}
           <div className="flex items-start justify-between gap-4 mb-3">
             <CategoryBadge category={job.category} />
@@ -39,13 +40,13 @@ export function JobCard({ job, index = 0 }: JobCardProps) {
           </h3>
 
           {/* Description */}
-          <p className="text-sm text-slate-500 leading-relaxed line-clamp-2 mb-4">
+          <p className="text-sm text-muted-500 leading-relaxed line-clamp-2 mb-4">
             {job.description}
           </p>
 
           {/* Footer */}
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4 text-xs text-slate-400">
+            <div className="flex items-center gap-4 text-xs text-muted-500">
               {job.location && (
                 <span className="flex items-center gap-1">
                   <MapPin className="h-3.5 w-3.5" />
