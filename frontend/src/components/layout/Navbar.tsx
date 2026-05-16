@@ -9,7 +9,11 @@ import { useAuth } from "@/context/AuthContext";
 import toast from "react-hot-toast";
 
 export function Navbar() {
-  const pathname = usePathname();
+          {(!user || !isHomeowner) && (
+            <Link href="/" className={clsx('text-sm font-medium transition-colors', pathname === '/' ? 'text-slate-900' : 'text-muted-500 hover:text-slate-900')}>
+              Browse Jobs
+            </Link>
+          )}
   const router = useRouter();
   const { user, logout, isHomeowner } = useAuth();
 
@@ -49,9 +53,7 @@ export function Navbar() {
             )}
           >
             Browse Jobs
-          </Link>
-
-          {user ? (
+                </div>
             <>
               {/* Role pill */}
               <span
