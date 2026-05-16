@@ -74,8 +74,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const login = useCallback(async (email: string, password: string) => {
-    const { data } = await axios.post(`${API}/auth/login`, { email, password });
-    persist(data.token, data.user);
+    try {
+      const { data } = await axios.post(`${API}/auth/login`, {
+        email,
+        password,
+      });
+      persist(data.token, data.user);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error("Auth login failed", err);
+      throw err;
+    }
   }, []);
 
   const register = useCallback(
