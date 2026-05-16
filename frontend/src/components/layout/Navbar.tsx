@@ -3,17 +3,14 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { clsx } from "clsx";
-import { Wrench, Plus, LogOut, LogIn, Home, HardHat } from "lucide-react";
+import { Wrench, Plus, LogIn, Home, HardHat } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 import toast from "react-hot-toast";
+import { UserMenu } from "./UserMenu";
 
 export function Navbar() {
-          {(!user || !isHomeowner) && (
-            <Link href="/" className={clsx('text-sm font-medium transition-colors', pathname === '/' ? 'text-slate-900' : 'text-muted-500 hover:text-slate-900')}>
-              Browse Jobs
-            </Link>
-          )}
+  const pathname = usePathname();
   const router = useRouter();
   const { user, logout, isHomeowner } = useAuth();
 
@@ -43,17 +40,21 @@ export function Navbar() {
         </Link>
 
         <nav className="flex items-center gap-3">
-          <Link
-            href="/"
-            className={clsx(
-              "text-sm font-medium transition-colors",
-              pathname === "/"
-                ? "text-slate-900"
-                : "text-muted-500 hover:text-slate-900",
-            )}
-          >
-            Browse Jobs
-                </div>
+          {(!user || !isHomeowner) && (
+            <Link
+              href="/"
+              className={clsx(
+                "text-sm font-medium transition-colors",
+                pathname === "/"
+                  ? "text-slate-900"
+                  : "text-muted-500 hover:text-slate-900",
+              )}
+            >
+              Browse Jobs
+            </Link>
+          )}
+
+          {user ? (
             <>
               {/* Role pill */}
               <span
@@ -88,23 +89,14 @@ export function Navbar() {
                 </motion.div>
               )}
 
-              {/* User name + logout */}
+              {/* User menu */}
               <div className="flex items-center gap-3">
                 <div className="hidden sm:flex flex-col text-right">
                   <span className="text-sm font-medium text-slate-900">
                     {user.name}
                   </span>
-                  <span className="text-xs text-muted-500">
-                    {isHomeowner ? "Homeowner" : "Tradesperson"}
-                  </span>
                 </div>
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50"
-                >
-                  <LogOut className="h-4 w-4" />
-                  <span className="hidden sm:inline">Sign out</span>
-                </button>
+                <UserMenu />
               </div>
             </>
           ) : (
