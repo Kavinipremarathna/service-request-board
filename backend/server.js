@@ -22,6 +22,13 @@ app.use(
     origin: (origin, callback) => {
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
+      } else if (
+        process.env.NODE_ENV === "development" &&
+        origin &&
+        origin.startsWith("http://localhost")
+      ) {
+        // Allow localhost origins with any port during development
+        callback(null, true);
       } else {
         callback(new Error(`CORS: Origin ${origin} not allowed`));
       }
