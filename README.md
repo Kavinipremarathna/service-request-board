@@ -119,9 +119,9 @@ Edit `.env` and add your MongoDB connection string:
 
 ```env
 PORT=5000
-MONGODB_URI=mongodb+srv://<user>:<password>@cluster0.xxxxx.mongodb.net/service-request-board
+MONGO_URI=mongodb+srv://<user>:<password>@cluster0.xxxxx.mongodb.net/service-request-board
 NODE_ENV=development
-FRONTEND_URL=http://localhost:3000
+CLIENT_URL=http://localhost:3000
 ```
 
 Start the backend:
@@ -174,12 +174,12 @@ The app will be at `http://localhost:3000`.
 
 ### Backend (`backend/.env`)
 
-| Variable       | Description                     | Example                 |
-| -------------- | ------------------------------- | ----------------------- |
-| `PORT`         | Server port                     | `5000`                  |
-| `MONGODB_URI`  | MongoDB Atlas connection string | `mongodb+srv://...`     |
-| `NODE_ENV`     | Environment                     | `development`           |
-| `FRONTEND_URL` | Allowed CORS origin(s)          | `http://localhost:3000` |
+| Variable     | Description                     | Example                 |
+| ------------ | ------------------------------- | ----------------------- |
+| `PORT`       | Server port                     | `5000`                  |
+| `MONGO_URI`  | MongoDB Atlas connection string | `mongodb+srv://...`     |
+| `NODE_ENV`   | Environment                     | `development`           |
+| `CLIENT_URL` | Allowed CORS origin(s)          | `http://localhost:3000` |
 
 ### Frontend (`frontend/.env.local`)
 
@@ -328,9 +328,11 @@ Validation errors include a field-level breakdown:
 4. Build command: `npm install`
 5. Start command: `npm start`
 6. Add environment variables:
-   - `MONGODB_URI` → your Atlas connection string
-   - `FRONTEND_URL` → your Vercel deployment URL
-   - `NODE_ENV` → `production`
+
+- `MONGO_URI` → your Atlas connection string
+- `CLIENT_URL` → your Vercel deployment URL
+- `NODE_ENV` → `production`
+
 7. Deploy.
 
 ---
