@@ -27,40 +27,14 @@
   .dark body {
     @apply bg-slate-900 text-slate-100;
   }
-
   /* Convert common white card backgrounds to dark variants when .dark is present */
   .dark .bg-white {
     background-color: #0f172a; /* slate-900 */
   }
 
+  /* Keep a single mapping for muted text in dark mode; allow component-level overrides to control specific colors */
   .dark .text-slate-600 {
     color: #94a3b8; /* muted 500 as readable mid-tone */
-  }
-
-  /* Map common text and border classes to readable dark variants */
-  .dark .text-slate-900 {
-    color: #f1f5f9;
-  }
-  .dark .text-slate-700 {
-    color: #cbd5e1;
-  }
-  .dark .text-slate-500 {
-    color: #94a3b8;
-  }
-  .dark .text-muted-500 {
-    color: #94a3b8;
-  }
-
-  .dark .border-slate-200 {
-    border-color: #24303f;
-  }
-  .dark .border-slate-100 {
-    border-color: #172029;
-  }
-
-  /* Ensure small muted backgrounds show in dark */
-  .dark .bg-muted-50 {
-    background-color: #071025;
   }
 }
 
@@ -68,23 +42,17 @@
   /* Strong overrides for dark mode placed in utilities layer so they win over generated utilities */
   .dark body {
     background-color: #0f172a !important;
-    color: #e6eef9 !important;
   }
   .dark .bg-white {
     background-color: #0f172a !important;
   }
-  /* Ensure text inside previously-white cards is light in dark mode */
-  .dark .bg-white,
-  .dark .bg-white * {
-    color: #e6eef9 !important;
-  }
 
-  /* Form elements inside dark mode */
+  /* Form elements inside dark mode: keep color inheritance so components can control text color */
   .dark input,
   .dark textarea,
   .dark select {
     background-color: transparent !important;
-    color: #e6eef9 !important;
+    color: inherit !important;
     border-color: #24303f !important;
   }
 
@@ -103,18 +71,6 @@
   }
   .dark .bg-muted-50 {
     background-color: #071025 !important;
-  }
-  .dark .text-slate-900 {
-    color: #f1f5f9 !important;
-  }
-  .dark .text-slate-700 {
-    color: #cbd5e1 !important;
-  }
-  .dark .text-slate-500 {
-    color: #94a3b8 !important;
-  }
-  .dark .text-muted-500 {
-    color: #94a3b8 !important;
   }
   .dark .border-slate-200 {
     border-color: #24303f !important;
