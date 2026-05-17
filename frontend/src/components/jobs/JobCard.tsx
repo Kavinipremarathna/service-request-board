@@ -43,18 +43,18 @@ export function JobCard({ job, index = 0 }: JobCardProps) {
           </div>
 
           {/* Title */}
-          <h3 className="mb-2 line-clamp-2 text-lg font-semibold leading-snug text-slate-900 transition-colors group-hover:text-slate-700 dark:!text-slate-900 dark:group-hover:!text-slate-800">
+          <h3 className="mb-2 line-clamp-2 text-lg font-semibold leading-snug text-slate-900 transition-colors group-hover:text-slate-700 dark:text-slate-100 dark:group-hover:text-slate-200">
             {job.title}
           </h3>
 
           {/* Description */}
-          <p className="mb-4 line-clamp-2 text-base leading-relaxed text-muted-600 dark:!text-slate-900">
+          <p className="mb-4 line-clamp-2 text-base leading-relaxed text-muted-600 dark:text-slate-300">
             {job.description}
           </p>
 
           {/* Footer */}
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4 text-sm text-muted-500 dark:!text-slate-900">
+            <div className="flex items-center gap-4 text-sm text-muted-500 dark:text-slate-300">
               {job.location && (
                 <span className="flex items-center gap-1">
                   <MapPin className="h-3.5 w-3.5 text-muted-500 dark:!text-white" />
