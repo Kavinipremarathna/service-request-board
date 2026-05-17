@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useCallback } from 'react';
-import { jobsApi } from '@/lib/api';
-import type { JobRequest } from '@/types';
+import { useState, useEffect, useCallback } from "react";
+import { jobsApi } from "@/lib/api";
+import type { JobRequest } from "@/types";
 
 interface UseJobsOptions {
   category?: string;
@@ -22,7 +22,15 @@ export function useJobs(options: UseJobsOptions = {}) {
       const res = await jobsApi.getAll(options);
       setJobs(res.data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch jobs');
+      const msg = err instanceof Error ? err.message : "Failed to fetch jobs";
+      if (msg === "Network Error") {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "not set";
+        setError(
+          `Cannot reach API at ${apiUrl}. Check NEXT_PUBLIC_API_URL and that the backend is running. (${msg})`,
+        );
+      } else {
+        setError(msg);
+      }
     } finally {
       setLoading(false);
     }

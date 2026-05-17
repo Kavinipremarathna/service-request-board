@@ -32,7 +32,12 @@ const api = axios.create({
 // Attach JWT from localStorage on every request
 api.interceptors.request.use((config) => {
   if (!config.baseURL) {
-    throw new Error("NEXT_PUBLIC_API_URL is required in production");
+    const val = process.env.NEXT_PUBLIC_API_URL || "<not set>";
+    return Promise.reject(
+      new Error(
+        `API base URL is not configured. Set NEXT_PUBLIC_API_URL (current: ${val})`,
+      ),
+    );
   }
 
   if (typeof window !== "undefined") {

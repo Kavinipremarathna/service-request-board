@@ -7,7 +7,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
-import { Loader2, Wrench, Home, HardHat, HelpCircle } from "lucide-react";
+import {
+  Loader2,
+  Wrench,
+  Home,
+  HardHat,
+  HelpCircle,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
 // ── Schemas ──────────────────────────────────────────────────────────────────
@@ -47,6 +55,7 @@ const labelClass =
 // ── Login form ────────────────────────────────────────────────────────────────
 function LoginForm({ onSuccess }: { onSuccess: () => void }) {
   const { login } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
   const [loginDebug, setLoginDebug] = useState<string | null>(null);
   const {
     register,
@@ -95,17 +104,31 @@ function LoginForm({ onSuccess }: { onSuccess: () => void }) {
         <label className={labelClass} htmlFor="login-password">
           Password
         </label>
-        <input
-          id="login-password"
-          {...register("password")}
-          type="password"
-          placeholder="••••••••"
-          aria-invalid={errors.password ? "true" : "false"}
-          aria-describedby={
-            errors.password ? "login-password-error" : undefined
-          }
-          className={`${inputClass} focus-ring`}
-        />
+        <div className="relative">
+          <input
+            id="login-password"
+            {...register("password")}
+            type={showPassword ? "text" : "password"}
+            placeholder="••••••••"
+            aria-invalid={errors.password ? "true" : "false"}
+            aria-describedby={
+              errors.password ? "login-password-error" : undefined
+            }
+            className={`${inputClass} focus-ring pr-10`}
+          />
+          <button
+            type="button"
+            aria-label={showPassword ? "Hide password" : "Show password"}
+            onClick={() => setShowPassword((s) => !s)}
+            className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-500 hover:text-slate-700"
+          >
+            {showPassword ? (
+              <EyeOff className="h-4 w-4" />
+            ) : (
+              <Eye className="h-4 w-4" />
+            )}
+          </button>
+        </div>
         <FieldError
           id="login-password-error"
           message={errors.password?.message}
