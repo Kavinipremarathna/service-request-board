@@ -9,7 +9,11 @@ import type {
 const isProduction = process.env.NODE_ENV === "production";
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
 
-if (isProduction && (!apiBaseUrl || !apiBaseUrl.trim())) {
+if (
+  typeof window !== "undefined" &&
+  isProduction &&
+  (!apiBaseUrl || !apiBaseUrl.trim())
+) {
   throw new Error("NEXT_PUBLIC_API_URL is required in production");
 }
 
