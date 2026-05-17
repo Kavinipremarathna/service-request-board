@@ -226,25 +226,28 @@ function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
       {/* Role selector */}
       <div>
         <label className={labelClass}>I am a...</label>
+
         <div
           className="grid grid-cols-2 gap-3"
           role="radiogroup"
           aria-label="Role"
         >
-          {[
-            {
-              value: "homeowner",
-              label: "Homeowner",
-              desc: "Post & manage jobs",
-              Icon: Home,
-            },
-            {
-              value: "worker",
-              label: "Tradesperson",
-              desc: "Browse & work jobs",
-              Icon: HardHat,
-            },
-          ].map(({ value, label, desc, Icon }) => (
+          {(
+            [
+              {
+                value: "homeowner",
+                label: "Homeowner",
+                desc: "Post & manage jobs",
+                Icon: Home,
+              },
+              {
+                value: "worker",
+                label: "Tradesperson",
+                desc: "Browse & work jobs",
+                Icon: HardHat,
+              },
+            ] as const
+          ).map(({ value, label, desc, Icon }) => (
             <button
               key={value}
               type="button"
@@ -254,10 +257,10 @@ function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
               onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") {
                   e.preventDefault();
-                  toggleRole(value as "homeowner" | "worker");
+                  toggleRole(value);
                 }
               }}
-              onClick={() => toggleRole(value as "homeowner" | "worker")}
+              onClick={() => toggleRole(value)}
               className={`flex flex-col items-center gap-1.5 rounded-xl border-2 p-4 text-center transition focus-ring ${
                 selectedRoles.includes(value)
                   ? "border-slate-900 bg-slate-900 text-white dark:border-brand-400 dark:bg-brand-500 dark:text-slate-950"
@@ -265,15 +268,22 @@ function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
               }`}
             >
               <Icon className="h-5 w-5" aria-hidden="true" />
+
               <span className="text-sm font-semibold">{label}</span>
+
               <span
-                className={`text-xs ${selectedRoles.includes(value) ? "text-slate-300 dark:text-slate-900/70" : "text-slate-400 dark:text-slate-400"}`}
+                className={`text-xs ${
+                  selectedRoles.includes(value)
+                    ? "text-slate-300 dark:text-slate-900/70"
+                    : "text-slate-400 dark:text-slate-400"
+                }`}
               >
                 {desc}
               </span>
             </button>
           ))}
         </div>
+
         <FieldError message={errors.roles?.message as any} />
       </div>
 
