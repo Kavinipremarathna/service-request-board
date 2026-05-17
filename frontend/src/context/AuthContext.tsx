@@ -14,7 +14,8 @@ export interface AuthUser {
   _id: string;
   name: string;
   email: string;
-  role: "homeowner" | "worker";
+  roles: ("homeowner" | "worker")[];
+  activeRole: "homeowner" | "worker";
 }
 
 interface AuthContextValue {
@@ -26,10 +27,12 @@ interface AuthContextValue {
     name: string,
     email: string,
     password: string,
-    role: "homeowner" | "worker",
+    roles: ("homeowner" | "worker")[],
   ) => Promise<void>;
   updateProfile?: (user: AuthUser) => void;
   logout: () => void;
+  switchRole: (role: "homeowner" | "worker") => Promise<void>;
+  hasBothRoles: boolean;
   isHomeowner: boolean;
   isWorker: boolean;
 }
@@ -92,13 +95,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       name: string,
       email: string,
       password: string,
-      role: "homeowner" | "worker",
+      roles: ("homeowner" | "worker")[],
     ) => {
       const { data } = await axios.post(`${API}/auth/register`, {
         name,
         email,
         password,
-        role,
+        roles,
       });
       persist(data.token, data.user);
     },
@@ -112,6 +115,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   }, []);
 
+  const switchRole = useCallback(async (role: "homeowner" | "worker") => {
+    const storedToken = localStorage.getItem(TOKEN_KEY);
+    const { data } = await axios.patch(
+      `${API}/auth/switch-role`,
+      { role },
+      { headers: { Authorization: `Bearer ${storedToken}` } },
+    );
+    const updated = {
+      ...JSON.parse(localStorage.getItem(USER_KEY) || "{}"),
+      activeRole: role,
+    };
+    localStorage.setItem(USER_KEY, JSON.stringify(updated));
+    setUser(data.user);
+  }, []);
+
   return (
     <AuthContext.Provider
       value={{
@@ -122,8 +140,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         register,
         updateProfile: updateProfileLocal,
         logout,
-        isHomeowner: user?.role === "homeowner",
-        isWorker: user?.role === "worker",
+        switchRole,
+        isHomeowner: user?.activeRole === "homeowner",
+        isWorker: user?.activeRole === "worker",
+        hasBothRoles: (user?.roles?.length ?? 0) > 1,
       }}
     >
       {children}

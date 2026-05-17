@@ -7,14 +7,21 @@ const { sendTokenResponse } = require("../utils/jwt");
 // @route   POST /api/auth/register
 // @access  Public
 const register = asyncHandler(async (req, res) => {
-  const { name, email, password, role } = req.body;
+  const { name, email, password, roles } = req.body;
 
   const existing = await User.findOne({ email });
   if (existing) {
     throw new AppError("An account with this email already exists", 409);
   }
 
-  const user = await User.create({ name, email, password, role });
+  const rolesArr = Array.isArray(roles) ? roles : [roles || "homeowner"];
+  const user = await User.create({
+    name,
+    email,
+    password,
+    roles: rolesArr,
+    activeRole: rolesArr[0],
+  });
   sendTokenResponse(user, 201, res);
 });
 
@@ -87,4 +94,35 @@ const changePassword = asyncHandler(async (req, res) => {
   res.status(200).json({ success: true, message: "Password updated" });
 });
 
-module.exports = { register, login, getMe, updateProfile, changePassword };
+const switchRole = asyncHandler(async (req, res) => {
+  const { role } = req.body;
+  const user = await User.findById(req.user._id);
+  if (!user.roles.includes(role)) {
+    throw new AppError(
+      `Your account does not have the "${role}" role. Available: ${user.roles.join(", ")}`,
+      403,
+    );
+  }
+  user.activeRole = role;
+  await user.save();
+  res.status(200).json({
+    success: true,
+    message: `Switched to ${role}`,
+    user: {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      roles: user.roles,
+      activeRole: user.activeRole,
+    },
+  });
+});
+
+module.exports = {
+  register,
+  login,
+  getMe,
+  updateProfile,
+  changePassword,
+  switchRole,
+};

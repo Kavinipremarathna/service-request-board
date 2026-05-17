@@ -82,8 +82,7 @@
   /* Form elements inside dark mode */
   .dark input,
   .dark textarea,
-  .dark select,
-  .dark button {
+  .dark select {
     background-color: transparent !important;
     color: #e6eef9 !important;
     border-color: #24303f !important;
@@ -129,5 +128,31 @@
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
+  }
+
+  /* Accessible focus outlines */
+  :focus {
+    outline: none;
+  }
+  :focus-visible {
+    box-shadow:
+      0 0 0 4px rgba(14, 165, 233, 0.18),
+      0 0 0 2px rgba(14, 165, 233, 0.32);
+    border-radius: 8px;
+  }
+  .focus-ring:focus-visible {
+    box-shadow:
+      0 0 0 4px rgba(14, 165, 233, 0.18),
+      0 0 0 2px rgba(14, 165, 233, 0.32);
+  }
+
+  /* Utility to opt-out of the global focus ring for small UI controls */
+  .no-focus-ring:focus-visible {
+    box-shadow: none !important;
+  }
+
+  /* High contrast helper */
+  .hc-text {
+    color: #0f172a; /* very dark */
   }
 }

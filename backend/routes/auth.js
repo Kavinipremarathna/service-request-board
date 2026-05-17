@@ -6,6 +6,7 @@ const {
   getMe,
   updateProfile,
   changePassword,
+  switchRole,
 } = require("../controllers/authController");
 const {
   validateRegister,
@@ -18,5 +19,6 @@ router.post("/login", validateLogin, login);
 router.get("/me", protect, getMe);
 router.put("/me", protect, updateProfile);
 router.put("/me/password", protect, changePassword);
+router.patch("/switch-role", protect, switchRole);
 
 module.exports = router;

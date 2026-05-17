@@ -25,8 +25,16 @@ export function JobCard({ job, index = 0 }: JobCardProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05, duration: 0.35 }}
     >
-      <Link href={`/jobs/${job._id}`} className="group block">
-        <div className="relative overflow-hidden rounded-xl bg-white p-6 shadow-card transition-transform duration-200 hover:shadow-lg hover:-translate-y-1">
+      <Link
+        href={`/jobs/${job._id}`}
+        className="group block"
+        aria-label={`View details for ${job.title}`}
+      >
+        <div
+          role="link"
+          aria-hidden="false"
+          className="relative overflow-hidden rounded-xl bg-white p-6 shadow-card transition-transform duration-200 hover:shadow-lg hover:-translate-y-1"
+        >
           <div className="absolute left-0 top-0 h-full w-1 bg-brand-500 opacity-90" />
           {/* Top row */}
           <div className="flex items-start justify-between gap-4 mb-3">
@@ -35,30 +43,33 @@ export function JobCard({ job, index = 0 }: JobCardProps) {
           </div>
 
           {/* Title */}
-          <h3 className="text-base font-semibold text-slate-900 leading-snug mb-2 group-hover:text-slate-700 transition-colors line-clamp-2">
+          <h3 className="text-lg font-semibold text-slate-900 leading-snug mb-2 group-hover:text-slate-700 transition-colors line-clamp-2">
             {job.title}
           </h3>
 
           {/* Description */}
-          <p className="text-sm text-muted-500 leading-relaxed line-clamp-2 mb-4">
+          <p className="text-base text-muted-600 leading-relaxed line-clamp-2 mb-4">
             {job.description}
           </p>
 
           {/* Footer */}
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4 text-xs text-muted-500">
+            <div className="flex items-center gap-4 text-sm text-muted-500">
               {job.location && (
                 <span className="flex items-center gap-1">
-                  <MapPin className="h-3.5 w-3.5" />
+                  <MapPin className="h-3.5 w-3.5 text-muted-500 dark:text-slate-300" />
                   {job.location}
                 </span>
               )}
               <span className="flex items-center gap-1">
-                <Calendar className="h-3.5 w-3.5" />
+                <Calendar className="h-3.5 w-3.5 text-muted-500 dark:text-slate-300" />
                 {date}
               </span>
             </div>
-            <ArrowRight className="h-4 w-4 text-slate-300 transition-transform group-hover:translate-x-0.5 group-hover:text-slate-500" />
+            <ArrowRight
+              className="h-5 w-5 text-slate-400 dark:text-slate-300 transition-transform group-hover:translate-x-0.5 group-hover:text-slate-500 dark:group-hover:text-slate-200"
+              aria-hidden="true"
+            />
           </div>
         </div>
       </Link>

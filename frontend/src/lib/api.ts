@@ -75,6 +75,10 @@ export const jobsApi = {
     const { data } = await api.delete(`/jobs/${id}`);
     return data;
   },
+  getMine: async (): Promise<ApiResponse<JobRequest[]>> => {
+    const { data } = await api.get("/jobs/mine");
+    return data;
+  },
 };
 
 export const userApi = {

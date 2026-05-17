@@ -44,8 +44,8 @@ export default function JobDetailPage() {
 
   // Workers can update any job status; homeowners only their own
   const canUpdateStatus = isWorker || (isHomeowner && isOwner);
-  // Any signed-in user can delete a request
-  const canDelete = Boolean(user);
+  // Only the homeowner who owns the job may delete it
+  const canDelete = Boolean(user && isHomeowner && isOwner);
 
   const handleStatusChange = async (
     e: React.ChangeEvent<HTMLSelectElement>,
@@ -120,7 +120,7 @@ export default function JobDetailPage() {
           href="/"
           className="mb-6 inline-flex items-center gap-1.5 text-sm text-slate-500 transition hover:text-slate-800"
         >
-          <ArrowLeft className="h-4 w-4" />
+          <ArrowLeft className="h-4 w-4 text-slate-500 dark:text-slate-300" />
           Back to jobs
         </Link>
 
@@ -140,12 +140,12 @@ export default function JobDetailPage() {
           <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 text-xs text-slate-400 mb-6">
             {job.location && (
               <span className="flex items-center gap-1">
-                <MapPin className="h-3.5 w-3.5" />
+                <MapPin className="h-3.5 w-3.5 text-slate-400 dark:text-slate-300" />
                 {job.location}
               </span>
             )}
             <span className="flex items-center gap-1">
-              <Calendar className="h-3.5 w-3.5" />
+              <Calendar className="h-3.5 w-3.5 text-slate-400 dark:text-slate-300" />
               Posted {date}
             </span>
           </div>
@@ -170,13 +170,13 @@ export default function JobDetailPage() {
                 <div className="space-y-2">
                   {job.contactName && (
                     <div className="flex items-center gap-2 text-sm text-slate-700">
-                      <User className="h-4 w-4 text-slate-400" />
+                      <User className="h-4 w-4 text-slate-400 dark:text-slate-300" />
                       {job.contactName}
                     </div>
                   )}
                   {job.contactEmail && (
                     <div className="flex items-center gap-2 text-sm text-slate-700">
-                      <Mail className="h-4 w-4 text-slate-400" />
+                      <Mail className="h-4 w-4 text-slate-400 dark:text-slate-300" />
                       <a
                         href={`mailto:${job.contactEmail}`}
                         className="text-blue-600 hover:underline"
@@ -188,7 +188,7 @@ export default function JobDetailPage() {
                 </div>
               ) : (
                 <div className="flex items-center gap-2 text-sm text-slate-400">
-                  <Lock className="h-4 w-4" />
+                  <Lock className="h-4 w-4 text-slate-400 dark:text-slate-300" />
                   <span>
                     <Link
                       href="/auth"
@@ -245,7 +245,7 @@ export default function JobDetailPage() {
                         ))}
                       </select>
                       {statusLoading && (
-                        <Loader2 className="absolute right-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 animate-spin text-slate-400" />
+                        <Loader2 className="absolute right-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 animate-spin text-slate-400 dark:text-slate-300" />
                       )}
                     </div>
                   </div>
@@ -261,7 +261,7 @@ export default function JobDetailPage() {
                     onClick={() => setShowConfirm(true)}
                     className="flex items-center gap-1.5 rounded-xl border border-red-100 bg-red-50 px-4 py-2 text-sm font-medium text-red-600 transition hover:bg-red-100 shrink-0"
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className="h-4 w-4 text-red-600 dark:text-red-400" />
                     Delete
                   </button>
                 )}

@@ -47,11 +47,13 @@ export function UserMenu() {
       <button
         aria-expanded={open}
         onClick={() => setOpen((s) => !s)}
-        className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-500 text-white shadow-sm transition hover:opacity-95"
+        className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-brand-500 ring-1 ring-black/5 shadow-sm transition hover:opacity-95 dark:bg-slate-800 dark:text-white"
         title={user.name}
       >
         <span className="text-sm font-semibold">
-          {initials || <UserIcon className="h-4 w-4" />}
+          {initials || (
+            <UserIcon className="h-4 w-4 text-brand-500 dark:text-white" />
+          )}
         </span>
       </button>
 

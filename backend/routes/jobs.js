@@ -3,6 +3,7 @@ const router = express.Router();
 const {
   getJobs,
   getJob,
+  getMyJobs,
   createJob,
   updateJobStatus,
   deleteJob,
@@ -15,6 +16,8 @@ const { protect, authorize } = require("../middleware/auth");
 
 // Public — anyone can browse
 router.get("/", getJobs);
+// Authenticated user's jobs
+router.get("/mine", protect, getMyJobs);
 router.get("/:id", getJob);
 
 // Homeowner only — post a job
@@ -29,7 +32,7 @@ router.patch(
   updateJobStatus,
 );
 
-// Any authenticated owner can delete their own job
-router.delete("/:id", protect, deleteJob);
+// Homeowner only — delete own job
+router.delete("/:id", protect, authorize("homeowner"), deleteJob);
 
 module.exports = router;

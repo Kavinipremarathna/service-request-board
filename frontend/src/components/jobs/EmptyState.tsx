@@ -1,5 +1,5 @@
-import { Inbox } from 'lucide-react';
-import Link from 'next/link';
+import { Inbox } from "lucide-react";
+import Link from "next/link";
 
 interface EmptyStateProps {
   title?: string;
@@ -8,14 +8,14 @@ interface EmptyStateProps {
 }
 
 export function EmptyState({
-  title = 'No jobs found',
-  description = 'Try adjusting your filters or search terms.',
+  title = "No jobs found",
+  description = "Try adjusting your filters or search terms.",
   showCta = false,
 }: EmptyStateProps) {
   return (
     <div className="flex flex-col items-center justify-center py-20 text-center">
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-50 mb-4">
-        <Inbox className="h-7 w-7 text-slate-400" />
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-50 mb-4 dark:bg-slate-800">
+        <Inbox className="h-7 w-7 text-slate-400 dark:text-slate-300" />
       </div>
       <h3 className="text-sm font-semibold text-slate-700 mb-1">{title}</h3>
       <p className="text-sm text-slate-400 max-w-xs">{description}</p>

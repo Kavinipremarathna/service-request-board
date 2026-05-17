@@ -33,6 +33,16 @@ const getJob = asyncHandler(async (req, res) => {
   res.status(200).json({ success: true, data: job });
 });
 
+// @desc    Get jobs owned by current user
+// @route   GET /api/jobs/mine
+// @access  Private
+const getMyJobs = asyncHandler(async (req, res) => {
+  const jobs = await JobRequest.find({ owner: req.user._id })
+    .populate("owner", "name email")
+    .sort({ createdAt: -1 });
+  res.status(200).json({ success: true, count: jobs.length, data: jobs });
+});
+
 // @desc    Create a new job request
 // @route   POST /api/jobs
 // @access  Private — homeowner only
@@ -48,13 +58,11 @@ const createJob = asyncHandler(async (req, res) => {
     contactEmail,
     owner: req.user._id,
   });
-  res
-    .status(201)
-    .json({
-      success: true,
-      message: "Job request created successfully",
-      data: job,
-    });
+  res.status(201).json({
+    success: true,
+    message: "Job request created successfully",
+    data: job,
+  });
 });
 
 // @desc    Update job status
@@ -67,7 +75,7 @@ const updateJobStatus = asyncHandler(async (req, res) => {
 
   // Homeowners can only update their own jobs' status
   if (
-    req.user.role === "homeowner" &&
+    req.user.activeRole === "homeowner" &&
     job.owner.toString() !== req.user._id.toString()
   ) {
     throw new AppError("You can only update the status of your own jobs", 403);
@@ -75,31 +83,42 @@ const updateJobStatus = asyncHandler(async (req, res) => {
 
   job.status = req.body.status;
   await job.save();
-  res
-    .status(200)
-    .json({
-      success: true,
-      message: "Job status updated successfully",
-      data: job,
-    });
+  res.status(200).json({
+    success: true,
+    message: "Job status updated successfully",
+    data: job,
+  });
 });
 
 // @desc    Delete a job request
 // @route   DELETE /api/jobs/:id
-// @access  Private — any signed-in user
+// @access  Private — homeowner only (must be owner)
 const deleteJob = asyncHandler(async (req, res) => {
   const job = await JobRequest.findById(req.params.id);
   if (!job)
     throw new AppError(`Job request not found with id: ${req.params.id}`, 404);
 
+  // Only homeowners can delete jobs, and only their own
+  if (req.user.activeRole !== "homeowner") {
+    throw new AppError("Only homeowners can delete job requests", 403);
+  }
+  if (!job.owner || job.owner.toString() !== req.user._id.toString()) {
+    throw new AppError("You can only delete your own job requests", 403);
+  }
+
   await job.deleteOne();
-  res
-    .status(200)
-    .json({
-      success: true,
-      message: "Job request deleted successfully",
-      data: {},
-    });
+  res.status(200).json({
+    success: true,
+    message: "Job request deleted successfully",
+    data: {},
+  });
 });
 
-module.exports = { getJobs, getJob, createJob, updateJobStatus, deleteJob };
+module.exports = {
+  getJobs,
+  getJob,
+  getMyJobs,
+  createJob,
+  updateJobStatus,
+  deleteJob,
+};

@@ -241,7 +241,7 @@ Creates a new job request.
   "title": "Leaking kitchen tap",
   "description": "The mixer tap in my kitchen is dripping...",
   "category": "Plumbing",
-  "location": "Glasgow",
+  "location": "Colombo",
   "contactName": "Jane Smith",
   "contactEmail": "jane@example.com"
 }

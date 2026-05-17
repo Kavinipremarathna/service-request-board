@@ -1,43 +1,63 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 
 const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, 'Name is required'],
+      required: [true, "Name is required"],
       trim: true,
-      maxlength: [80, 'Name cannot exceed 80 characters'],
+      maxlength: [80, "Name cannot exceed 80 characters"],
     },
     email: {
       type: String,
-      required: [true, 'Email is required'],
+      required: [true, "Email is required"],
       unique: true,
       lowercase: true,
       trim: true,
-      match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email address'],
+      match: [/^\S+@\S+\.\S+$/, "Please provide a valid email address"],
     },
     password: {
       type: String,
-      required: [true, 'Password is required'],
-      minlength: [6, 'Password must be at least 6 characters'],
+      required: [true, "Password is required"],
+      minlength: [6, "Password must be at least 6 characters"],
       select: false, // never returned in queries by default
     },
-    role: {
-      type: String,
+    roles: {
+      type: [String],
       enum: {
-        values: ['homeowner', 'worker'],
-        message: 'Role must be homeowner or worker',
+        values: ["homeowner", "worker"],
+        message: "{VALUE} is not a valid role",
       },
-      default: 'homeowner',
+      validate: {
+        validator: (arr) => arr.length >= 1,
+        message: "At least one role is required",
+      },
+      default: ["homeowner"],
+    },
+    activeRole: {
+      type: String,
+      enum: ["homeowner", "worker"],
+      default: "homeowner",
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
+// Keep activeRole in sync with roles
+userSchema.pre("save", function (next) {
+  if (!this.roles || this.roles.length === 0) {
+    this.roles = ["homeowner"];
+  }
+  if (!this.roles.includes(this.activeRole)) {
+    this.activeRole = this.roles[0];
+  }
+  next();
+});
+
 // Hash password before saving
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
   const salt = await bcrypt.genSalt(12);
   this.password = await bcrypt.hash(this.password, salt);
   next();
@@ -48,4 +68,4 @@ userSchema.methods.matchPassword = async function (plainPassword) {
   return bcrypt.compare(plainPassword, this.password);
 };
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model("User", userSchema);
