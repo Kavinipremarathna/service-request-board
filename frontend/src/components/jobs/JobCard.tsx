@@ -43,31 +43,31 @@ export function JobCard({ job, index = 0 }: JobCardProps) {
           </div>
 
           {/* Title */}
-          <h3 className="text-lg font-semibold text-slate-900 leading-snug mb-2 group-hover:text-slate-700 transition-colors line-clamp-2">
+          <h3 className="mb-2 line-clamp-2 text-lg font-semibold leading-snug text-slate-900 transition-colors group-hover:text-slate-700 dark:!text-slate-900 dark:group-hover:!text-slate-800">
             {job.title}
           </h3>
 
           {/* Description */}
-          <p className="text-base text-muted-600 leading-relaxed line-clamp-2 mb-4">
+          <p className="mb-4 line-clamp-2 text-base leading-relaxed text-muted-600 dark:!text-slate-900">
             {job.description}
           </p>
 
           {/* Footer */}
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4 text-sm text-muted-500">
+            <div className="flex items-center gap-4 text-sm text-muted-500 dark:!text-slate-900">
               {job.location && (
                 <span className="flex items-center gap-1">
-                  <MapPin className="h-3.5 w-3.5 text-muted-500 dark:text-slate-300" />
+                  <MapPin className="h-3.5 w-3.5 text-muted-500 dark:!text-white" />
                   {job.location}
                 </span>
               )}
               <span className="flex items-center gap-1">
-                <Calendar className="h-3.5 w-3.5 text-muted-500 dark:text-slate-300" />
+                <Calendar className="h-3.5 w-3.5 text-muted-500 dark:!text-white" />
                 {date}
               </span>
             </div>
             <ArrowRight
-              className="h-5 w-5 text-slate-400 dark:text-slate-300 transition-transform group-hover:translate-x-0.5 group-hover:text-slate-500 dark:group-hover:text-slate-200"
+              className="h-5 w-5 text-slate-400 transition-transform group-hover:translate-x-0.5 group-hover:text-slate-500 dark:!text-white dark:group-hover:!text-white"
               aria-hidden="true"
             />
           </div>
