@@ -19,11 +19,9 @@ if (
 
 const baseURL =
   apiBaseUrl?.trim() ||
-  (process.env.NODE_ENV === "development" ? "http://localhost:5000/api" : "");
-
-if (!baseURL) {
-  throw new Error("API base URL is missing");
-}
+  (process.env.NODE_ENV === "development"
+    ? "http://localhost:5000/api"
+    : "service-request-board-production.up.railway.app/api");
 
 const api = axios.create({
   baseURL,
