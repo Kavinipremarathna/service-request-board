@@ -14,9 +14,6 @@ const isProduction = process.env.NODE_ENV === "production";
 const isDevelopment = !isProduction;
 
 const requiredEnvVars = ["MONGO_URI", "JWT_SECRET"];
-if (isProduction) {
-  requiredEnvVars.push("CLIENT_URL");
-}
 
 const missingEnvVars = requiredEnvVars.filter((key) => {
   const value = process.env[key];
@@ -32,16 +29,23 @@ if (missingEnvVars.length > 0) {
 
 const clientUrl = process.env.CLIENT_URL || "";
 const allowedOrigins = isProduction
-  ? clientUrl
-      .split(",")
-      .map((origin) => origin.trim())
-      .filter(Boolean)
-  : ["http://localhost:3000", "http://127.0.0.1:3000"];
-
-if (isProduction && allowedOrigins.length === 0) {
-  console.error("❌ CLIENT_URL must be set in production.");
-  // Avoid force-exiting in hosted environments; log and let the start path decide.
-}
+  ? [
+      "https://service-request-board-ebon.vercel.app",
+      ...clientUrl
+        .split(",")
+        .map((origin) => origin.trim())
+        .filter(Boolean),
+    ]
+  : [
+      "http://localhost:3000",
+      "http://127.0.0.1:3000",
+      "http://localhost:3001",
+      "http://127.0.0.1:3001",
+      "http://localhost:3002",
+      "http://127.0.0.1:3002",
+      "http://localhost:3003",
+      "http://127.0.0.1:3003",
+    ];
 
 const corsOptions = {
   origin: (origin, callback) => {

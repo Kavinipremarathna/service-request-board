@@ -6,7 +6,13 @@ import type {
   JobStatus,
 } from "@/types";
 
-const baseURL = "/api";
+const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
+
+const baseURL =
+  apiBaseUrl?.trim() ||
+  (process.env.NODE_ENV === "development"
+    ? "http://localhost:3002/api"
+    : "https://service-request-board-production.up.railway.app/api");
 
 const api = axios.create({
   baseURL,
