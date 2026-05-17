@@ -6,22 +6,7 @@ import type {
   JobStatus,
 } from "@/types";
 
-const isProduction = process.env.NODE_ENV === "production";
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
-
-if (
-  typeof window !== "undefined" &&
-  isProduction &&
-  (!apiBaseUrl || !apiBaseUrl.trim())
-) {
-  // Log but don't throw on import — let runtime API calls surface configuration errors.
-  // eslint-disable-next-line no-console
-  console.error("NEXT_PUBLIC_API_URL is required in production");
-}
-
-const baseURL =
-  apiBaseUrl?.trim() ||
-  (process.env.NODE_ENV === "development" ? "http://localhost:5000/api" : "");
+const baseURL = "/api";
 
 const api = axios.create({
   baseURL,
@@ -31,15 +16,6 @@ const api = axios.create({
 
 // Attach JWT from localStorage on every request
 api.interceptors.request.use((config) => {
-  if (!config.baseURL) {
-    const val = process.env.NEXT_PUBLIC_API_URL || "<not set>";
-    return Promise.reject(
-      new Error(
-        `API base URL is not configured. Set NEXT_PUBLIC_API_URL (current: ${val})`,
-      ),
-    );
-  }
-
   if (typeof window !== "undefined") {
     const token = localStorage.getItem("srb_token");
     if (token) config.headers.Authorization = `Bearer ${token}`;

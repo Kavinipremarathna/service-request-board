@@ -94,7 +94,7 @@ function LoginForm({ onSuccess }: { onSuccess: () => void }) {
           {...register("email")}
           type="email"
           placeholder="you@example.com"
-          aria-invalid={errors.email ? "true" : "false"}
+          aria-invalid={!!errors.email}
           aria-describedby={errors.email ? "login-email-error" : undefined}
           className={`${inputClass} focus-ring`}
         />
@@ -110,7 +110,7 @@ function LoginForm({ onSuccess }: { onSuccess: () => void }) {
             {...register("password")}
             type={showPassword ? "text" : "password"}
             placeholder="••••••••"
-            aria-invalid={errors.password ? "true" : "false"}
+            aria-invalid={!!errors.password}
             aria-describedby={
               errors.password ? "login-password-error" : undefined
             }
@@ -206,7 +206,7 @@ function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
           id="reg-name"
           {...register("name")}
           placeholder="Jane Smith"
-          aria-invalid={errors.name ? "true" : "false"}
+          aria-invalid={!!errors.name}
           aria-describedby={errors.name ? "reg-name-error" : undefined}
           className={`${inputClass} focus-ring`}
         />
@@ -221,7 +221,7 @@ function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
           {...register("email")}
           type="email"
           placeholder="you@example.com"
-          aria-invalid={errors.email ? "true" : "false"}
+          aria-invalid={!!errors.email}
           aria-describedby={errors.email ? "reg-email-error" : undefined}
           className={`${inputClass} focus-ring`}
         />
@@ -236,7 +236,7 @@ function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
           {...register("password")}
           type="password"
           placeholder="min. 6 characters"
-          aria-invalid={errors.password ? "true" : "false"}
+          aria-invalid={!!errors.password}
           aria-describedby={errors.password ? "reg-password-error" : undefined}
           className={`${inputClass} focus-ring`}
         />
@@ -335,14 +335,14 @@ export default function AuthPage() {
   const handleSuccess = () => router.push("/");
 
   return (
-    <div className="flex min-h-[calc(100vh-64px)] items-center justify-center px-4 py-12">
+    <div className="flex min-h-[calc(100dvh-64px)] items-center justify-center overflow-hidden px-4 py-4 sm:py-6">
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md rounded-3xl border border-slate-200 bg-white/95 p-6 shadow-xl shadow-slate-200/50 backdrop-blur dark:border-slate-800 dark:bg-slate-950/90 dark:shadow-black/20 sm:p-8"
+        className="w-full max-w-md rounded-3xl border border-slate-200 bg-white/95 p-5 shadow-xl shadow-slate-200/50 backdrop-blur dark:border-slate-800 dark:bg-slate-950/90 dark:shadow-black/20 sm:p-7"
       >
         {/* Logo */}
-        <div className="mb-8 text-center">
+        <div className="mb-5 text-center sm:mb-6">
           <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-500 shadow-md shadow-brand-500/20 dark:bg-brand-400 dark:shadow-brand-400/20">
             <Wrench className="h-6 w-6 text-white" />
           </div>
@@ -355,7 +355,7 @@ export default function AuthPage() {
         </div>
 
         {/* Tabs */}
-        <div className="mb-6 flex items-center justify-center gap-3">
+        <div className="mb-4 flex items-center justify-center gap-3 sm:mb-5">
           <button
             onClick={() => setTab("login")}
             className={`rounded-full px-5 py-2 text-base font-medium transition ${
@@ -378,7 +378,7 @@ export default function AuthPage() {
           </button>
         </div>
 
-        <div className="mb-5 flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-300">
+        <div className="mb-4 flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-300">
           <div className="flex items-center gap-2">
             <span className="font-medium">Quick help</span>
             <div className="group relative">
