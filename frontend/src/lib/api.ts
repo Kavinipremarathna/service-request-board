@@ -6,8 +6,23 @@ import type {
   JobStatus,
 } from "@/types";
 
+const isProduction = process.env.NODE_ENV === "production";
+const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
+
+if (isProduction && (!apiBaseUrl || !apiBaseUrl.trim())) {
+  throw new Error("NEXT_PUBLIC_API_URL is required in production");
+}
+
+const baseURL =
+  apiBaseUrl?.trim() ||
+  (process.env.NODE_ENV === "development" ? "http://localhost:5000/api" : "");
+
+if (!baseURL) {
+  throw new Error("API base URL is missing");
+}
+
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api",
+  baseURL,
   headers: { "Content-Type": "application/json" },
   timeout: 10000,
 });
@@ -18,15 +33,16 @@ api.interceptors.request.use((config) => {
     const token = localStorage.getItem("srb_token");
     if (token) config.headers.Authorization = `Bearer ${token}`;
   }
-  // Debug: log outgoing request summary in browser console
-  try {
-    // eslint-disable-next-line no-console
-    console.debug("[API] request", {
-      method: config.method,
-      url: config.url,
-      hasAuth: !!config.headers?.Authorization,
-    });
-  } catch {}
+  if (process.env.NODE_ENV === "development") {
+    try {
+      // eslint-disable-next-line no-console
+      console.debug("[API] request", {
+        method: config.method,
+        url: config.url,
+        hasAuth: !!config.headers?.Authorization,
+      });
+    } catch {}
+  }
   return config;
 });
 
@@ -34,11 +50,12 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Debug log full error
-    try {
-      // eslint-disable-next-line no-console
-      console.error("[API] response error", error);
-    } catch {}
+    if (process.env.NODE_ENV === "development") {
+      try {
+        // eslint-disable-next-line no-console
+        console.error("[API] response error", error);
+      } catch {}
+    }
     const message =
       error.response?.data?.message ||
       error.message ||

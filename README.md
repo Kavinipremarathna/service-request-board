@@ -49,7 +49,6 @@ service-request-board/
 │   │   ├── AppError.js        # Custom error class
 │   │   └── seed.js            # Sample data seeder
 │   ├── .env.example
-│   ├── render.yaml
 │   ├── package.json
 │   └── server.js
 │
@@ -317,23 +316,74 @@ Validation errors include a field-level breakdown:
 1. Push the `frontend/` folder to GitHub.
 2. Connect the repo in [vercel.com](https://vercel.com).
 3. Set the **Root Directory** to `frontend`.
-4. Add environment variable: `NEXT_PUBLIC_API_URL` → your Render backend URL.
+4. Add environment variable: `NEXT_PUBLIC_API_URL` → your Railway backend API URL.
 5. Deploy.
 
-### Backend → Render
+### Backend → Railway
 
 1. Push the `backend/` folder to GitHub.
-2. Create a new **Web Service** in [render.com](https://render.com).
+2. Create a new **Node.js service** in [railway.app](https://railway.app).
 3. Set **Root Directory** to `backend`.
-4. Build command: `npm install`
-5. Start command: `npm start`
-6. Add environment variables:
+4. Railway should auto-detect Node.js; if it asks for commands use:
+
+- Build command: `npm install`
+- Start command: `npm start`
+
+5. Add environment variables:
 
 - `MONGO_URI` → your Atlas connection string
 - `CLIENT_URL` → your Vercel deployment URL
 - `NODE_ENV` → `production`
+- `JWT_SECRET` → long random secret
 
-7. Deploy.
+6. Deploy.
+
+### MongoDB Atlas
+
+1. Create or reuse your MongoDB Atlas cluster.
+2. In Atlas Network Access, allow the Railway deployment to connect. For quick testing you can allow your current deployment access pattern, then tighten access later.
+3. Copy the Atlas connection string into `MONGO_URI`.
+
+### Deployment order
+
+1. Deploy the backend to Railway first.
+2. Copy the Railway backend URL.
+3. Set `NEXT_PUBLIC_API_URL` in Vercel to `https://<your-railway-backend-url>/api`.
+4. Set `CLIENT_URL` in Railway to your Vercel frontend domain.
+5. Redeploy the frontend.
+
+### Production checklist
+
+- `MONGO_URI` is set in Railway
+- `JWT_SECRET` is set in Railway
+- `CLIENT_URL` is set in Railway
+- `NODE_ENV=production` is set in Railway
+- `NEXT_PUBLIC_API_URL` is set in Vercel
+- Backend root route returns `API Running Successfully`
+- Backend `/health` returns JSON OK
+- Frontend requests point to Railway, not localhost
+- No outdated deployment references remain in deployment settings
+
+### Testing checklist
+
+Backend:
+
+- `GET /`
+- `GET /health`
+- `POST /api/auth/login`
+- `GET /api/auth/me`
+- `GET /api/jobs`
+- `GET /api/jobs/mine`
+
+Frontend:
+
+- Open the deployed Vercel app
+- Log in
+- Confirm job list loads
+- Open a job detail page
+- Create a job
+- Switch roles if available
+- Verify all API requests use the Railway backend URL
 
 ---
 

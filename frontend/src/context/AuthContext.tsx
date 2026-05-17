@@ -39,7 +39,21 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+const isProduction = process.env.NODE_ENV === "production";
+const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
+
+if (isProduction && (!apiBaseUrl || !apiBaseUrl.trim())) {
+  throw new Error("NEXT_PUBLIC_API_URL is required in production");
+}
+
+const API =
+  apiBaseUrl?.trim() ||
+  (process.env.NODE_ENV === "development" ? "http://localhost:5000/api" : "");
+
+if (!API) {
+  throw new Error("API base URL is missing");
+}
+
 const TOKEN_KEY = "srb_token";
 const USER_KEY = "srb_user";
 
@@ -84,8 +98,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
       persist(data.token, data.user);
     } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error("Auth login failed", err);
+      if (process.env.NODE_ENV === "development") {
+        // eslint-disable-next-line no-console
+        console.error("Auth login failed", err);
+      }
       throw err;
     }
   }, []);
