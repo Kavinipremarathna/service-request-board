@@ -167,7 +167,7 @@ function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
     formState: { errors, isSubmitting },
   } = useForm<RegisterValues>({
     resolver: zodResolver(registerSchema),
-    defaultValues: { roles: [] },
+    defaultValues: { roles: ["homeowner"] },
   });
 
   const selectedRoles = watch("roles") ?? [];
