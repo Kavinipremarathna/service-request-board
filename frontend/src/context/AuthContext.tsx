@@ -8,7 +8,7 @@ import {
   useCallback,
   type ReactNode,
 } from "react";
-import axios from "axios";
+import api from "@/lib/api";
 
 export interface AuthUser {
   _id: string;
@@ -38,30 +38,6 @@ interface AuthContextValue {
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
-
-const isProduction = process.env.NODE_ENV === "production";
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
-
-if (
-  typeof window !== "undefined" &&
-  isProduction &&
-  (!apiBaseUrl || !apiBaseUrl.trim())
-) {
-  // Log missing production API base URL — do not throw at module import.
-  // This prevents SSR or function initialization from crashing unexpectedly.
-  // The runtime will throw if an API call is attempted without configuration.
-  // eslint-disable-next-line no-console
-  console.error("NEXT_PUBLIC_API_URL is required in production");
-}
-
-const API =
-  apiBaseUrl?.trim() ||
-  (process.env.NODE_ENV === "development" ? "http://localhost:5000/api" : "");
-
-function getApiUrl(path: string) {
-  if (!API) throw new Error("API base URL is not configured");
-  return `${API}${path.startsWith("/") ? "" : "/"}${path}`;
-}
 
 const TOKEN_KEY = "srb_token";
 const USER_KEY = "srb_user";
@@ -101,7 +77,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(async (email: string, password: string) => {
     try {
-      const { data } = await axios.post(getApiUrl("/auth/login"), {
+      const { data } = await api.post("/auth/login", {
         email,
         password,
       });
@@ -122,7 +98,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       password: string,
       roles: ("homeowner" | "worker")[],
     ) => {
-      const { data } = await axios.post(getApiUrl("/auth/register"), {
+      const { data } = await api.post("/auth/register", {
         name,
         email,
         password,
@@ -142,8 +118,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const switchRole = useCallback(async (role: "homeowner" | "worker") => {
     const storedToken = localStorage.getItem(TOKEN_KEY);
-    const { data } = await axios.patch(
-      getApiUrl("/auth/switch-role"),
+    const { data } = await api.patch(
+      "/auth/switch-role",
       { role },
       { headers: { Authorization: `Bearer ${storedToken}` } },
     );

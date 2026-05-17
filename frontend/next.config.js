@@ -5,7 +5,9 @@ const nextConfig = {
     const backendBaseUrl =
       process.env.BACKEND_BASE_URL ||
       process.env.RAILWAY_PUBLIC_DOMAIN ||
-      "http://localhost:3002";
+      (process.env.NODE_ENV === "development"
+        ? "http://localhost:3002"
+        : "https://service-request-board-production.up.railway.app");
 
     return [
       {
