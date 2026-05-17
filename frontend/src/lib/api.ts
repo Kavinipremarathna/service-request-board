@@ -9,19 +9,12 @@ import type {
 const isProduction = process.env.NODE_ENV === "production";
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
 
-if (
-  typeof window !== "undefined" &&
-  isProduction &&
-  (!apiBaseUrl || !apiBaseUrl.trim())
-) {
-  throw new Error("NEXT_PUBLIC_API_URL is required in production");
-}
 
 const baseURL =
   apiBaseUrl?.trim() ||
   (process.env.NODE_ENV === "development"
     ? "http://localhost:5000/api"
-    : "service-request-board-production.up.railway.app/api");
+    : "https://placeholder-api.com/api");
 
 const api = axios.create({
   baseURL,
