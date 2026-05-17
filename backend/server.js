@@ -27,7 +27,7 @@ if (missingEnvVars.length > 0) {
   console.error(
     `❌ Missing required environment variables: ${missingEnvVars.join(", ")}`,
   );
-  process.exit(1);
+  // Do not call process.exit in environments like serverless — fail startup gracefully.
 }
 
 const clientUrl = process.env.CLIENT_URL || "";
@@ -40,7 +40,7 @@ const allowedOrigins = isProduction
 
 if (isProduction && allowedOrigins.length === 0) {
   console.error("❌ CLIENT_URL must be set in production.");
-  process.exit(1);
+  // Avoid force-exiting in hosted environments; log and let the start path decide.
 }
 
 const corsOptions = {
@@ -121,7 +121,25 @@ app.all("*", (req, res, next) => {
 // Global error handler
 app.use(errorHandler);
 
+// Global error handlers to avoid unhandled exceptions crashing the process silently
+process.on("unhandledRejection", (reason) => {
+  console.error("Unhandled Rejection:", reason);
+});
+process.on("uncaughtException", (err) => {
+  console.error("Uncaught Exception:", err);
+});
+
 const startServer = async () => {
+  if (missingEnvVars.length > 0) {
+    console.error("Server not started due to missing configuration.");
+    return;
+  }
+
+  if (isProduction && allowedOrigins.length === 0) {
+    console.error("Server not started: invalid CLIENT_URL configuration.");
+    return;
+  }
+
   try {
     await connectDB();
 
@@ -133,10 +151,17 @@ const startServer = async () => {
     });
   } catch (error) {
     console.error(`❌ Failed to start server: ${error.message}`);
-    process.exit(1);
+    // Let the caller / hosting platform handle process lifecycle. Rethrow to make failure visible.
+    throw error;
   }
 };
 
-startServer();
+// Only start the server when this file is executed directly (e.g., `node server.js`).
+// This prevents automatic `app.listen` when the module is imported (useful for tests and serverless).
+if (require.main === module) {
+  startServer().catch((err) => {
+    console.error("Fatal startup error:", err);
+  });
+}
 
 module.exports = app;

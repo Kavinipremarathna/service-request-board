@@ -9,12 +9,21 @@ import type {
 const isProduction = process.env.NODE_ENV === "production";
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
 
+if (
+  typeof window !== "undefined" &&
+  isProduction &&
+  (!apiBaseUrl || !apiBaseUrl.trim())
+) {
+  // Log but don't throw on import — let runtime API calls surface configuration errors.
+  // eslint-disable-next-line no-console
+  console.error("NEXT_PUBLIC_API_URL is required in production");
+}
 
 const baseURL =
   apiBaseUrl?.trim() ||
   (process.env.NODE_ENV === "development"
     ? "http://localhost:5000/api"
-    : "https://placeholder-api.com/api");
+    : "service-request-board-production.up.railway.app/api");
 
 const api = axios.create({
   baseURL,

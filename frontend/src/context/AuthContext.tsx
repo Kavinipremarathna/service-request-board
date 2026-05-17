@@ -47,15 +47,20 @@ if (
   isProduction &&
   (!apiBaseUrl || !apiBaseUrl.trim())
 ) {
-  throw new Error("NEXT_PUBLIC_API_URL is required in production");
+  // Log missing production API base URL — do not throw at module import.
+  // This prevents SSR or function initialization from crashing unexpectedly.
+  // The runtime will throw if an API call is attempted without configuration.
+  // eslint-disable-next-line no-console
+  console.error("NEXT_PUBLIC_API_URL is required in production");
 }
 
 const API =
   apiBaseUrl?.trim() ||
   (process.env.NODE_ENV === "development" ? "http://localhost:5000/api" : "");
 
-if (!API) {
-  throw new Error("API base URL is missing");
+function getApiUrl(path: string) {
+  if (!API) throw new Error("API base URL is not configured");
+  return `${API}${path.startsWith("/") ? "" : "/"}${path}`;
 }
 
 const TOKEN_KEY = "srb_token";
@@ -96,7 +101,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(async (email: string, password: string) => {
     try {
-      const { data } = await axios.post(`${API}/auth/login`, {
+      const { data } = await axios.post(getApiUrl("/auth/login"), {
         email,
         password,
       });
@@ -117,7 +122,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       password: string,
       roles: ("homeowner" | "worker")[],
     ) => {
-      const { data } = await axios.post(`${API}/auth/register`, {
+      const { data } = await axios.post(getApiUrl("/auth/register"), {
         name,
         email,
         password,
@@ -138,7 +143,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const switchRole = useCallback(async (role: "homeowner" | "worker") => {
     const storedToken = localStorage.getItem(TOKEN_KEY);
     const { data } = await axios.patch(
-      `${API}/auth/switch-role`,
+      getApiUrl("/auth/switch-role"),
       { role },
       { headers: { Authorization: `Bearer ${storedToken}` } },
     );
