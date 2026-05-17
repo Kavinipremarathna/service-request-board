@@ -72,6 +72,16 @@
   .dark .bg-muted-50 {
     background-color: #071025 !important;
   }
+  /* Map common slate text utilities to accessible light colors in dark mode */
+  .dark .text-slate-900 {
+    color: #e6eef9 !important;
+  }
+  .dark .text-slate-700 {
+    color: #cbd5e1 !important;
+  }
+  .dark .text-slate-500 {
+    color: #94a3b8 !important;
+  }
   .dark .border-slate-200 {
     border-color: #24303f !important;
   }
