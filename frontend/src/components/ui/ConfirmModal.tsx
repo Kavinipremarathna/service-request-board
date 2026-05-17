@@ -22,6 +22,8 @@ export function ConfirmModal({
   onCancel,
   loading,
 }: ConfirmModalProps) {
+  const descriptionId = "confirm-modal-description";
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -39,16 +41,25 @@ export function ConfirmModal({
             exit={{ opacity: 0, scale: 0.95, y: 8 }}
             transition={{ type: "spring", stiffness: 400, damping: 30 }}
             className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-6 shadow-2xl"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="confirm-modal-title"
+            aria-describedby={descriptionId}
           >
             <div className="flex items-start gap-4">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-50 dark:bg-red-900/10">
                 <AlertTriangle className="h-5 w-5 text-red-500 dark:text-red-400" />
               </div>
               <div>
-                <h3 className="text-base font-semibold text-slate-900">
+                <h3
+                  id="confirm-modal-title"
+                  className="text-base font-semibold text-slate-900"
+                >
                   {title}
                 </h3>
-                <p className="mt-1 text-sm text-slate-500">{message}</p>
+                <p id={descriptionId} className="mt-1 text-sm text-slate-500">
+                  {message}
+                </p>
               </div>
             </div>
             <div className="mt-6 flex gap-3 justify-end">

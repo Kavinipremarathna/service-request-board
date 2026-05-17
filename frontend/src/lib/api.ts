@@ -21,9 +21,7 @@ if (
 
 const baseURL =
   apiBaseUrl?.trim() ||
-  (process.env.NODE_ENV === "development"
-    ? "http://localhost:5000/api"
-    : "service-request-board-production.up.railway.app/api");
+  (process.env.NODE_ENV === "development" ? "http://localhost:5000/api" : "");
 
 const api = axios.create({
   baseURL,
@@ -33,6 +31,10 @@ const api = axios.create({
 
 // Attach JWT from localStorage on every request
 api.interceptors.request.use((config) => {
+  if (!config.baseURL) {
+    throw new Error("NEXT_PUBLIC_API_URL is required in production");
+  }
+
   if (typeof window !== "undefined") {
     const token = localStorage.getItem("srb_token");
     if (token) config.headers.Authorization = `Bearer ${token}`;

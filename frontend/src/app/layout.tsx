@@ -9,6 +9,9 @@ export const metadata: Metadata = {
   title: "TradeBoard — Service Request Board",
   description:
     "Post and browse home service job requests. Connect homeowners with skilled tradespeople.",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
