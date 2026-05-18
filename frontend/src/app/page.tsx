@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useJobs } from "@/hooks/useJobs";
 import { jobsApi } from "@/lib/api";
@@ -42,8 +42,18 @@ export default function HomePage() {
     status: "",
     search: "",
   });
-  const searchParams = useSearchParams();
-  const browse = searchParams?.get("browse");
+
+  const [browse, setBrowse] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const sp = new URLSearchParams(window.location.search || "");
+    setBrowse(sp.get("browse"));
+    const onPop = () =>
+      setBrowse(new URLSearchParams(window.location.search).get("browse"));
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
 
   // Latest jobs preview
   const { jobs: latestJobs, loading: latestLoading } = useJobs();
