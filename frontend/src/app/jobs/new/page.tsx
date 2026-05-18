@@ -179,6 +179,16 @@ export default function NewJobPage() {
           </div>
         </div>
 
+        <div>
+          <label className={labelClass}>Phone number</label>
+          <input
+            {...register("contactNumber")}
+            placeholder="e.g. +441234567890"
+            className={inputClass}
+          />
+          <FieldError message={errors.contactNumber?.message} />
+        </div>
+
         <div className="pt-2">
           <motion.button
             whileHover={{ scale: 1.01 }}

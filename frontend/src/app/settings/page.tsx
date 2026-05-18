@@ -154,19 +154,21 @@ export default function SettingsPage() {
       <section className="mb-8 rounded-xl bg-white p-6 shadow-card">
         <h2 className="text-lg font-semibold mb-3">Account</h2>
         <p className="text-sm text-slate-500 mb-4">
-          Switch into worker view if your account includes that role, otherwise
-          you'll be prompted to sign in or sign up.
+          Toggle into the other role view if your account includes that role,
+          otherwise you'll be prompted to sign in or sign up.
         </p>
         <div>
           <button
             onClick={async () => {
               if (!user) return router.push("/auth");
-              if (user.roles?.includes("worker")) {
+              const next =
+                user.activeRole === "homeowner" ? "worker" : "homeowner";
+              if (user.roles?.includes(next)) {
                 try {
-                  await switchRole("worker");
+                  await switchRole(next);
                   router.push("/");
                 } catch (err) {
-                  toast.error("Failed to switch to worker view");
+                  toast.error(`Failed to switch to ${next} view`);
                 }
               } else {
                 router.push("/auth");
@@ -174,7 +176,7 @@ export default function SettingsPage() {
             }}
             className="flex items-center gap-2 rounded-md bg-brand-500 px-4 py-2 text-white"
           >
-            Go to worker view
+            {`Go to ${user?.activeRole === "homeowner" ? "worker" : "homeowner"} view`}
           </button>
         </div>
       </section>

@@ -3,6 +3,10 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { MapPin, Calendar, ArrowRight } from "lucide-react";
+import { Check } from "lucide-react";
+import toast from "react-hot-toast";
+import { useAuth } from "@/context/AuthContext";
+import { jobsApi } from "@/lib/api";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { CategoryBadge } from "@/components/ui/CategoryBadge";
 import type { JobRequest } from "@/types";
@@ -13,6 +17,7 @@ interface JobCardProps {
 }
 
 export function JobCard({ job, index = 0 }: JobCardProps) {
+  const { isWorker } = useAuth();
   const date = new Date(job.createdAt).toLocaleDateString("en-GB", {
     day: "numeric",
     month: "short",
@@ -38,8 +43,28 @@ export function JobCard({ job, index = 0 }: JobCardProps) {
           <div className="absolute left-0 top-0 h-full w-1 bg-brand-500 opacity-90" />
           {/* Top row */}
           <div className="flex items-start justify-between gap-4 mb-3">
-            <CategoryBadge category={job.category} />
-            <StatusBadge status={job.status} />
+            {/* Light mode: show separate category + status badges. In dark mode we show a combined pill. */}
+            <div className="hidden dark:block">
+              <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium bg-slate-800 text-slate-100 ring-1 ring-slate-700">
+                <span
+                  className={`h-1.5 w-1.5 rounded-full ${job.status === "Open" ? "bg-emerald-500" : job.status === "In Progress" ? "bg-amber-500" : "bg-slate-400"} dark:!bg-white`}
+                />
+                {job.status} · {job.category}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-2 w-full">
+              <div className="flex-1">
+                <div className="block dark:hidden">
+                  <CategoryBadge category={job.category} />
+                </div>
+              </div>
+              <div>
+                <div className="block dark:hidden">
+                  <StatusBadge status={job.status} />
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Title */}
@@ -66,10 +91,35 @@ export function JobCard({ job, index = 0 }: JobCardProps) {
                 {date}
               </span>
             </div>
-            <ArrowRight
-              className="h-5 w-5 text-slate-400 transition-transform group-hover:translate-x-0.5 group-hover:text-slate-500 dark:!text-white dark:group-hover:!text-white"
-              aria-hidden="true"
-            />
+            <div className="flex items-center gap-2">
+              {isWorker && job.status === "Open" && (
+                <button
+                  onClick={async (e) => {
+                    e.preventDefault();
+                    try {
+                      await jobsApi.updateStatus(job._id, "In Progress");
+                      toast.success("Job accepted");
+                      // reload current page to reflect change (simple approach)
+                      window.location.reload();
+                    } catch (err) {
+                      toast.error(
+                        err instanceof Error
+                          ? err.message
+                          : "Failed to accept job",
+                      );
+                    }
+                  }}
+                  className="inline-flex items-center gap-2 rounded-md bg-emerald-50 px-3 py-1 text-emerald-700"
+                >
+                  <Check className="h-4 w-4" />
+                  Accept
+                </button>
+              )}
+              <ArrowRight
+                className="h-5 w-5 text-slate-400 transition-transform group-hover:translate-x-0.5 group-hover:text-slate-500 dark:!text-white dark:group-hover:!text-white"
+                aria-hidden="true"
+              />
+            </div>
           </div>
         </div>
       </Link>

@@ -3,16 +3,16 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import {
-  ClipboardList,
   Settings,
   LogOut,
   User as UserIcon,
+  ArrowLeftRight,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
 export function UserMenu() {
-  const { user, logout } = useAuth();
+  const { user, logout, switchRole, hasBothRoles, isHomeowner } = useAuth();
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
@@ -64,9 +64,29 @@ export function UserMenu() {
               href={"/?mine=1"}
               className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-slate-700 hover:bg-muted-50"
             >
-              <ClipboardList className="h-4 w-4 text-muted-500" />
-              My Jobs
+              <UserIcon className="h-4 w-4 text-muted-500" />
+              Profile
             </Link>
+            {hasBothRoles && (
+              <button
+                onClick={async () => {
+                  const next = isHomeowner ? "worker" : "homeowner";
+                  try {
+                    await switchRole(next);
+                    setOpen(false);
+                    // navigate to home after switching
+                    router.push("/");
+                  } catch (err) {
+                    // eslint-disable-next-line no-console
+                    console.error("Switch role failed", err);
+                  }
+                }}
+                className="mt-1 w-full flex items-center gap-2 rounded-md px-3 py-2 text-sm text-slate-700 hover:bg-muted-50"
+              >
+                <ArrowLeftRight className="h-4 w-4 text-muted-500" />
+                Switch to {isHomeowner ? "Tradesperson" : "Homeowner"}
+              </button>
+            )}
             <Link
               href={"/settings"}
               className="mt-1 flex items-center gap-2 rounded-md px-3 py-2 text-sm text-slate-700 hover:bg-muted-50"

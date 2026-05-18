@@ -148,10 +148,23 @@ const startServer = async () => {
     await connectDB();
 
     const PORT = process.env.PORT || 5000;
-    app.listen(PORT, () => {
+    const server = app.listen(PORT, () => {
       console.log(
         `🚀 Server running on port ${PORT} in ${process.env.NODE_ENV || "development"} mode`,
       );
+    });
+
+    // handle listen errors (e.g. EADDRINUSE) explicitly so the process
+    // exits with a clear message instead of an uncaught exception.
+    server.on("error", (err) => {
+      if (err && err.code === "EADDRINUSE") {
+        console.error(
+          `❌ Port ${PORT} is already in use. Please free the port or set PORT env var to a different value.`,
+        );
+        process.exit(1);
+      }
+      console.error("❌ Server error:", err);
+      process.exit(1);
     });
   } catch (error) {
     console.error(`❌ Failed to start server: ${error.message}`);

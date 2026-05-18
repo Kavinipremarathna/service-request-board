@@ -35,7 +35,7 @@ export function Navbar() {
     try {
       await switchRole(next);
       toast.success(
-        `Switched to ${next === "homeowner" ? "🏠 Homeowner" : "🔧 Tradesperson"} mode`,
+        `Switched to ${next === "homeowner" ? " Homeowner" : " Tradesperson"} mode`,
       );
     } catch (err) {
       toast.error("Failed to switch role");
@@ -64,9 +64,9 @@ export function Navbar() {
         </Link>
 
         <nav className="flex items-center gap-3">
-          {(!user || !isHomeowner) && (
+          {pathname !== "/" && (!user || !isHomeowner) && (
             <Link
-              href="/"
+              href="/?browse=1"
               className={clsx(
                 "text-sm font-medium transition-colors",
                 pathname === "/"

@@ -32,7 +32,7 @@ export function OnboardingBanner() {
           <strong className="block text-base text-brand-900">
             How to use this site
           </strong>
-          <p className="mt-1">Find a job, or post one — simple steps below.</p>
+          <p className="mt-1">Find a job, or post one - simple steps below.</p>
           <ol className="mt-3 list-decimal space-y-1 pl-5">
             <li>Search for the service you need, like "tap" or "painting".</li>
             <li>Open a listing to see details, contact, or request the job.</li>

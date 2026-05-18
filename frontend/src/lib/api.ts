@@ -1,4 +1,5 @@
 import axios from "axios";
+import toast from "react-hot-toast";
 import type {
   JobRequest,
   CreateJobInput,
@@ -19,6 +20,12 @@ const api = axios.create({
   headers: { "Content-Type": "application/json" },
   timeout: 10000,
 });
+
+// Retry settings for 429 / transient errors
+const MAX_RETRIES = 3;
+const BASE_BACKOFF_MS = 500;
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 // Attach JWT from localStorage on every request
 api.interceptors.request.use((config) => {
@@ -41,7 +48,13 @@ api.interceptors.request.use((config) => {
 
 // Unwrap errors into readable messages
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    try {
+      const toastId = (response?.config as any)?.__toastId;
+      if (toastId) toast.dismiss(toastId);
+    } catch {}
+    return response;
+  },
   (error) => {
     if (process.env.NODE_ENV === "development") {
       try {
@@ -49,6 +62,59 @@ api.interceptors.response.use(
         console.error("[API] response error", error);
       } catch {}
     }
+    const config = error.config as any;
+    const status = error.response?.status;
+
+    // Retry on 429 Too Many Requests or on network errors (no response)
+    const shouldRetry =
+      (!!config && status === 429) || (!error.response && !!config);
+
+    if (shouldRetry) {
+      config.__retryCount = config.__retryCount || 0;
+      // Show a loading toast on first 429
+      if (status === 429 && !config.__toastId) {
+        try {
+          config.__toastId = toast.loading("Rate limited — retrying...");
+        } catch {}
+      }
+
+      if (config.__retryCount < MAX_RETRIES) {
+        config.__retryCount += 1;
+
+        // Honor Retry-After header if present (seconds)
+        const retryAfter = error.response?.headers?.["retry-after"];
+        const waitMs = retryAfter
+          ? Number(retryAfter) * 1000
+          : Math.pow(2, config.__retryCount - 1) * BASE_BACKOFF_MS;
+
+        if (process.env.NODE_ENV === "development") {
+          try {
+            // eslint-disable-next-line no-console
+            console.debug(
+              `[API] retrying request (${config.__retryCount}) after ${waitMs}ms`,
+              {
+                url: config.url,
+                method: config.method,
+                status,
+              },
+            );
+          } catch {}
+        }
+
+        return sleep(waitMs).then(() => api.request(config));
+      }
+    }
+    // Retries exhausted or not retryable - clear any loading toast and show error for 429
+    try {
+      if (config?.__toastId) {
+        toast.dismiss(config.__toastId);
+        if (status === 429)
+          toast.error("Too many requests — please try again later");
+      } else if (status === 429) {
+        toast.error("Too many requests — please try again later");
+      }
+    } catch {}
+
     const message =
       error.response?.data?.message ||
       error.message ||
