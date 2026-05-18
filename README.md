@@ -1,4 +1,4 @@
-# TradeBoard — Service Request Board
+# TradeBoard - Service Request Board
 
 A full-stack web application where homeowners post service requests and tradespeople browse, manage, and update them. Built as a technical assessment for GlobalTNA.
 
