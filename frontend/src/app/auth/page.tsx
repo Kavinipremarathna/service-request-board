@@ -350,7 +350,7 @@ export default function AuthPage() {
             TradeBoard
           </h1>
           <p className="mt-1 text-sm text-slate-700 dark:text-slate-400">
-            Find trusted local help — fast
+            Find trusted local help - fast
           </p>
         </div>
 

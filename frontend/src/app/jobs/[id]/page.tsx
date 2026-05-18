@@ -133,6 +133,16 @@ export default function JobDetailPage() {
             <StatusBadge status={job.status} />
           </div>
 
+          {job.assignedTo && (
+            <div className="mb-4 text-sm text-slate-600">
+              <User className="inline-block h-4 w-4 mr-2 text-slate-400" />
+              Assigned to{" "}
+              {typeof job.assignedTo === "string"
+                ? job.assignedTo
+                : job.assignedTo.name}
+            </div>
+          )}
+
           <h1 className="text-xl font-bold tracking-tight text-slate-900 mb-3">
             {job.title}
           </h1>
@@ -182,6 +192,17 @@ export default function JobDetailPage() {
                         className="text-blue-600 hover:underline"
                       >
                         {job.contactEmail}
+                      </a>
+                    </div>
+                  )}
+                  {job.contactNumber && (
+                    <div className="flex items-center gap-2 text-sm text-slate-700">
+                      <User className="h-4 w-4 text-slate-400 dark:text-slate-300" />
+                      <a
+                        href={`tel:${job.contactNumber}`}
+                        className="text-blue-600 hover:underline"
+                      >
+                        {job.contactNumber}
                       </a>
                     </div>
                   )}
@@ -253,6 +274,34 @@ export default function JobDetailPage() {
                   <p className="flex-1 text-xs text-slate-400">
                     {isHomeowner ? "You can only manage your own jobs." : ""}
                   </p>
+                )}
+
+                {/* Quick accept action for workers when job is Open */}
+                {isWorker && job.status === "Open" && (
+                  <button
+                    onClick={async () => {
+                      setStatusLoading(true);
+                      try {
+                        const res = await jobsApi.updateStatus(
+                          params.id,
+                          "In Progress",
+                        );
+                        setJob(res.data);
+                        toast.success("You accepted the job");
+                      } catch (err) {
+                        toast.error(
+                          err instanceof Error
+                            ? err.message
+                            : "Failed to accept job",
+                        );
+                      } finally {
+                        setStatusLoading(false);
+                      }
+                    }}
+                    className="flex items-center gap-1.5 rounded-xl bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700 hover:bg-emerald-100"
+                  >
+                    Accept job
+                  </button>
                 )}
 
                 {/* Delete — signed-in users */}

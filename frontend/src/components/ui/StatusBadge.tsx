@@ -10,17 +10,17 @@ const statusConfig: Record<JobStatus, { label: string; className: string }> = {
   Open: {
     label: "Open",
     className:
-      "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200 dark:text-slate-100",
+      "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200 dark:text-slate-100 dark:bg-emerald-900/10 dark:ring-emerald-700/20",
   },
   "In Progress": {
     label: "In Progress",
     className:
-      "bg-amber-50 text-amber-700 ring-1 ring-amber-200 dark:text-slate-100",
+      "bg-amber-50 text-amber-700 ring-1 ring-amber-200 dark:text-slate-100 dark:bg-amber-900/10 dark:ring-amber-700/20",
   },
   Closed: {
     label: "Closed",
     className:
-      "bg-slate-100 text-slate-500 ring-1 ring-slate-200 dark:text-slate-300",
+      "bg-slate-100 text-slate-500 ring-1 ring-slate-200 dark:text-slate-300 dark:bg-slate-800 dark:ring-slate-700",
   },
 };
 

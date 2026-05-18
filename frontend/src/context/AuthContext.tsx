@@ -82,6 +82,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         password,
       });
       persist(data.token, data.user);
+
+      // If the account has both roles and isn't already in worker mode,
+      // switch to the worker view automatically so the user doesn't need to re-login.
+      try {
+        if (
+          Array.isArray(data.user.roles) &&
+          data.user.roles.includes("worker") &&
+          data.user.activeRole !== "worker"
+        ) {
+          const resp = await api.patch("/auth/switch-role", { role: "worker" });
+          // Persist server-returned user which includes the updated activeRole
+          localStorage.setItem(USER_KEY, JSON.stringify(resp.data.user));
+          setUser(resp.data.user);
+        }
+      } catch (err) {
+        // Ignore auto-switch failures; user is still logged in as original role
+      }
     } catch (err) {
       if (process.env.NODE_ENV === "development") {
         // eslint-disable-next-line no-console
@@ -117,17 +134,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const switchRole = useCallback(async (role: "homeowner" | "worker") => {
-    const storedToken = localStorage.getItem(TOKEN_KEY);
-    const { data } = await api.patch(
-      "/auth/switch-role",
-      { role },
-      { headers: { Authorization: `Bearer ${storedToken}` } },
-    );
-    const updated = {
-      ...JSON.parse(localStorage.getItem(USER_KEY) || "{}"),
-      activeRole: role,
-    };
-    localStorage.setItem(USER_KEY, JSON.stringify(updated));
+    const { data } = await api.patch("/auth/switch-role", { role });
+    // Persist the user object returned by the server so the UI updates immediately
+    localStorage.setItem(USER_KEY, JSON.stringify(data.user));
     setUser(data.user);
   }, []);
 
