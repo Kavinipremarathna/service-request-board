@@ -306,15 +306,15 @@ Validation errors include a field-level breakdown:
 ### Frontend → Vercel
 
 1. Push the `frontend/` folder to GitHub.
-2. Connect the repo in [vercel.com](https://vercel.com).
+2. Connect the repo in (https://service-request-board-hvso6zzyl.vercel.app/).
 3. Set the **Root Directory** to `frontend`.
-4. Add environment variable: `NEXT_PUBLIC_API_URL` → your Railway backend API URL.
+4. Add environment variable: `NEXT_PUBLIC_API_URL` → service-request-board-production.up.railway.app/api.
 5. Deploy.
 
 ### Backend → Railway
 
 1. Push the `backend/` folder to GitHub.
-2. Create a new **Node.js service** in [railway.app](https://railway.app).
+2. Create a new **Node.js service** in [railway.app](service-request-board-production.up.railway.app).
 3. Set **Root Directory** to `backend`.
 4. Railway should auto-detect Node.js; if it asks for commands use:
 
@@ -323,10 +323,10 @@ Validation errors include a field-level breakdown:
 
 5. Add environment variables:
 
-- `MONGO_URI` → your Atlas connection string
-- `CLIENT_URL` → your Vercel deployment URL
-- `NODE_ENV` → `production`
-- `JWT_SECRET` → long random secret
+- `MONGO_URI` 
+- `CLIENT_URL`
+- `NODE_ENV` 
+- `JWT_SECRET` 
 
 6. Deploy.
 
