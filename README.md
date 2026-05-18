@@ -4,14 +4,6 @@ A full-stack web application where homeowners post service requests and tradespe
 
 ---
 
-## Screenshots
-
-> Add your own screenshots here once running locally or deployed.
-
-| Home Page      | Job Detail     | Create Job     |
-| -------------- | -------------- | -------------- |
-| _(screenshot)_ | _(screenshot)_ | _(screenshot)_ |
-
 ---
 
 ## Tech Stack
@@ -93,7 +85,7 @@ service-request-board/
 ### Prerequisites
 
 - Node.js 18+
-- A free MongoDB Atlas account (or local MongoDB install)
+- A free MongoDB Atlas account 
 
 ### 1. Clone the repository
 
@@ -410,9 +402,4 @@ Frontend:
 
 ---
 
-## Submission
 
-**Deadline:** 18 May 2026, 12:00 PM
-
-Send the GitHub repository link and live demo URL to your GlobalTNA contact.  
-CC: nimeshsago@gmail.com
