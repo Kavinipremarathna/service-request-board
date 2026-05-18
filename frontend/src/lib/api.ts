@@ -7,10 +7,22 @@ import type {
   JobStatus,
 } from "@/types";
 
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
+const rawApiBase = process.env.NEXT_PUBLIC_API_URL || "";
+
+function normalizeApiBase(raw: string) {
+  const trimmed = raw.trim();
+  if (!trimmed) return "";
+  // remove trailing slashes
+  const noTrail = trimmed.replace(/\/+$/, "");
+  // ensure we point at the /api root
+  if (/\/api$/i.test(noTrail)) return noTrail;
+  return `${noTrail}/api`;
+}
+
+const apiBaseUrl = normalizeApiBase(rawApiBase);
 
 const baseURL =
-  apiBaseUrl?.trim() ||
+  apiBaseUrl ||
   (process.env.NODE_ENV === "development"
     ? "http://localhost:3002/api"
     : "https://service-request-board-production.up.railway.app/api");
