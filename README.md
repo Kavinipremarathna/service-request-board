@@ -47,7 +47,7 @@ service-request-board/
 └── frontend/
     ├── src/
     │   ├── app/
-    │   │   ├── page.tsx              # Home — job list
+    │   │   ├── page.tsx              # Home - job list
     │   │   ├── layout.tsx            # Root layout
     │   │   ├── globals.css
     │   │   └── jobs/
